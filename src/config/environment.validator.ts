@@ -1,15 +1,8 @@
-import z from 'zod';
+import * as Joi from 'joi';
 
-export const environmentValidator = z.object({
-  DB_HOST: z.string().min(1),
-  DB_PORT: z
-    .string()
-    .min(1)
-    .transform((val) => parseInt(val, 10)),
-  DB_NAME: z.string().min(1),
-  DB_PASS: z.string().min(1),
-  DB_SYNC: z
-    .string()
-    .min(1)
-    .transform((val) => val === 'true'),
+export const environmentValidator = Joi.object({
+  JWT_SECRET: Joi.string().required(),
+  JWT_EXPIRES_IN: Joi.string().default('1h'),
+  DB_URL: Joi.string().required(),
+  DB_SYNC: Joi.boolean().default(false),
 });

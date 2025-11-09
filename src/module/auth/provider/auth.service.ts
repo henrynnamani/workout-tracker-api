@@ -1,5 +1,6 @@
 import { Injectable, RequestTimeoutException } from '@nestjs/common';
 import { SignUpDto } from '../dto/signup.dto';
+import { SignInDto } from '../dto/signin.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,4 +12,6 @@ export class AuthService {
       throw new RequestTimeoutException(err);
     }
   }
+
+  async signIn(signInDto: SignInDto) {}
 }
