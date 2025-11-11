@@ -1,4 +1,5 @@
-import { Workout } from '@/module/workouts/model/workout.entity';
+import { Comment } from '@/module/comments/model/comment.entity';
+import { WorkoutPlan } from '@/module/workout-plan/model/workout-plan.entity';
 import { BaseModel } from 'src/shared/base-model';
 import { Column, Entity, OneToMany } from 'typeorm';
 
@@ -10,6 +11,9 @@ export class User extends BaseModel {
   @Column({ type: 'varchar', nullable: false })
   password: string;
 
-  @OneToMany(() => Workout, (workout) => workout.user)
-  workouts: Workout[];
+  @OneToMany(() => WorkoutPlan, (plan) => plan.user)
+  workoutPlans: WorkoutPlan[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 }

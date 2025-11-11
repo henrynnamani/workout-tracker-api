@@ -12,11 +12,19 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './module/auth/strategy/jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './module/auth/guards/auth.guard';
+import { WorkoutPlanModule } from './module/workout-plan/workout-plan.module';
+import { WorkoutExercisesModule } from './module/workout-exercises/workout-exercises.module';
+import { ExercisesModule } from './module/exercises/exercises.module';
+import { CommentsModule } from './module/comments/comments.module';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
+    WorkoutPlanModule,
+    WorkoutExercisesModule,
+    ExercisesModule,
+    CommentsModule,
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService],

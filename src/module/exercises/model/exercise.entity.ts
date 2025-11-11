@@ -1,6 +1,6 @@
-import { Workout } from '@/module/workouts/model/workout.entity';
+import { WorkoutExercise } from '@/module/workout-exercises/model/workout-exercise.entity';
 import { BaseModel } from '@/shared/base-model';
-import { Column, Entity, ManyToMany } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
 
 export enum ExerciseCategory {
   STRENGTH = 'strength',
@@ -19,7 +19,4 @@ export class Exercise extends BaseModel {
 
   @Column({ type: 'enum', enum: ExerciseCategory, nullable: false })
   category: ExerciseCategory;
-
-  @ManyToMany(() => Workout, (workout) => workout.exercises)
-  workouts: Workout[];
 }

@@ -7,10 +7,24 @@ import * as SYS_MSG from '@/shared/system-message';
 export class ModelAction<T extends ObjectLiteral> {
   constructor(private readonly repository: Repository<T>) {}
 
+  async save(data: DeepPartial<T> | DeepPartial<T[]>): Promise<T | T[]> {
+    if (Array.isArray(data)) {
+      return await this.repository.save(data as DeepPartial<T>[]);
+    } else {
+      return await this.repository.save(data as DeepPartial<T>);
+    }
+  }
+
   async create(data: DeepPartial<T>): Promise<T> {
     const entity = this.repository.create(data);
 
     return this.repository.save(entity);
+  }
+
+  async createMany(data: DeepPartial<T[]>): Promise<T[]> {
+    const entities = this.repository.create(data);
+
+    return this.repository.save(entities);
   }
 
   async findAll(): Promise<T[]> {
