@@ -11,8 +11,8 @@ export class Comment extends BaseModel {
   @ManyToOne(() => User, (user) => user.comments, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToMany(() => WorkoutPlan, (plan) => plan.exercises, {
+  @ManyToOne(() => WorkoutPlan, (plan) => plan.comments, {
     onDelete: 'CASCADE',
   })
-  workoutPlans: WorkoutPlan[];
+  workoutPlan: WorkoutPlan;
 }

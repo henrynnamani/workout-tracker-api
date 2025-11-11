@@ -18,6 +18,6 @@ export class WorkoutPlan extends BaseModel {
   @OneToMany(() => WorkoutExercise, (we) => we.workoutPlan, { cascade: true })
   exercises: WorkoutExercise[];
 
-  @ManyToMany(() => Comment, (comment) => comment.workoutPlans)
+  @OneToMany(() => Comment, (comment) => comment.workoutPlan)
   comments: Comment[];
 }

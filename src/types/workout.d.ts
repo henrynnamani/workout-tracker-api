@@ -1,3 +1,5 @@
+import { IComment } from './comment';
+
 export interface IWorkoutExercise {
   id: string;
   sets: number;
