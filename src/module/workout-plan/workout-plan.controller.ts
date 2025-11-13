@@ -13,8 +13,8 @@ import { WorkoutPlanService } from './provider/workout-plan.service';
 import { CreateWorkoutDto } from './dto/create-workout.dto';
 import { LoggedInUser } from '../auth/decorator/current-user';
 import { UpdateWorkoutDto } from './dto/update-workout.dto';
-import { IComment } from '@/types/comment';
-import { IWorkoutPlan } from '@/types/workout';
+import { ScheduleWorkoutDto } from './dto/schedule-workout.dto';
+import { GetWorkoutDto } from './dto/get-workout.dto';
 
 @Controller('workout-plans')
 export class WorkoutPlanController {
@@ -51,11 +51,24 @@ export class WorkoutPlanController {
   }
 
   @Patch(':id/schedule')
-  scheduleWorkout() {}
+  scheduleWorkout(
+    @Param('id') id: string,
+    @Body() scheduleWorkoutDto: ScheduleWorkoutDto,
+  ) {
+    return this.workoutPlanService.scheduleWorkoutout(
+      id,
+      scheduleWorkoutDto.scheduledAt,
+    );
+  }
 
   @Get('')
-  getWorkouts() {}
+  getWorkouts(@Body() getWorkoutDto: GetWorkoutDto) {
+    return this.workoutPlanService.getWorkouts(getWorkoutDto.status);
+  }
 
   @Get('report')
-  generateWorkouts() {}
+  generateWorkouts(@LoggedInUser('id') userId: string) {
+    console.log('Generating report for user:', userId);
+    return this.workoutPlanService.generateWorkoutReport(userId);
+  }
 }

@@ -6,12 +6,12 @@ import {
   RequestTimeoutException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { WorkoutPlan } from '../model/workout-plan.entity';
-import { Repository } from 'typeorm';
+import { WorkoutPlan, WorkoutPlanStatus } from '../model/workout-plan.entity';
+import { Between, Repository } from 'typeorm';
 import { WorkoutExercisesService } from '@/module/workout-exercises/provider/workout-exercises.service';
 import * as SYS_MSG from '@/shared/system-message';
-import { UpdateWorkoutDto } from '../dto/update-workout.dto';
 import { CommentsService } from '@/module/comments/provider/comments.service';
+import { WorkoutExercise } from '@/module/workout-exercises/model/workout-exercise.entity';
 
 @Injectable()
 export class WorkoutPlanService {
@@ -92,6 +92,62 @@ export class WorkoutPlanService {
         message: SYS_MSG.WORKOUT_DELETED_SUCCESSFULLY,
       };
     } catch (err) {
+      throw new RequestTimeoutException(err);
+    }
+  }
+
+  async scheduleWorkoutout(id: string, scheduledAt: Date) {
+    try {
+      const workoutPlan = await this.modelAction.update(id, {
+        scheduledAt,
+      });
+
+      return {
+        message: SYS_MSG.WORKOUT_SCHEDULED_SUCCESSFULLY,
+        data: workoutPlan,
+      };
+    } catch (err) {
+      throw new RequestTimeoutException(err);
+    }
+  }
+
+  async getWorkouts(status: WorkoutPlanStatus) {
+    try {
+      const workouts = await this.modelAction.findAll({ status });
+
+      return {
+        message: SYS_MSG.WORKOUTS_FETCHED_SUCCESSFULLY,
+        data: workouts,
+      };
+    } catch (err) {
+      throw new RequestTimeoutException(err);
+    }
+  }
+
+  async generateWorkoutReport(userId: string) {
+    try {
+      const workouts = await this.modelAction.findAll();
+
+      const totalWorkouts = workouts.length;
+
+      const completedWorkouts = workouts.filter(
+        (workout) => workout.status === WorkoutPlanStatus.COMPLETED,
+      ).length;
+
+      const pendingWorkouts = workouts.filter(
+        (workout) => workout.status === WorkoutPlanStatus.PENDING,
+      ).length;
+
+      return {
+        message: SYS_MSG.WORKOUT_REPORT_GENERATED_SUCCESSFULLY,
+        data: {
+          totalWorkouts,
+          completedWorkouts,
+          pendingWorkouts,
+        },
+      };
+    } catch (err) {
+      console.log(err);
       throw new RequestTimeoutException(err);
     }
   }

@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, ObjectLiteral, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  FindOptionsOrder,
+  ObjectLiteral,
+  Repository,
+} from 'typeorm';
 import * as SYS_MSG from '@/shared/system-message';
 
 @Injectable()
@@ -27,8 +31,12 @@ export class ModelAction<T extends ObjectLiteral> {
     return this.repository.save(entities);
   }
 
-  async findAll(): Promise<T[]> {
-    return this.repository.find();
+  async findAll(filter?: Partial<T>, relations?: string[]): Promise<T[]> {
+    return this.repository.find({
+      where: filter || {},
+      order: { createdAt: 'DESC' } as any as FindOptionsOrder<T>,
+      relations: relations || [],
+    });
   }
 
   async findOne(id: string): Promise<T> {
