@@ -7,11 +7,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WorkoutPlan, WorkoutPlanStatus } from '../model/workout-plan.entity';
-import { Between, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { WorkoutExercisesService } from '@/module/workout-exercises/provider/workout-exercises.service';
 import * as SYS_MSG from '@/shared/system-message';
 import { CommentsService } from '@/module/comments/provider/comments.service';
-import { WorkoutExercise } from '@/module/workout-exercises/model/workout-exercise.entity';
 
 @Injectable()
 export class WorkoutPlanService {
