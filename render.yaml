@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: my‑api‑service
+    runtime: node
+    plan: starter
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: JWT_EXPIRES_IN
+        value: ${JWT_EXPIRES_IN}
+      - key: JWT_SECRET
+        value: ${JWT_SECRET}
+      - key: DB_URL
+        value: ${DATABASE_URL}

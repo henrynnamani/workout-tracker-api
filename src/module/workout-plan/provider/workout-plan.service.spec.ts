@@ -8,7 +8,7 @@ import { WorkoutPlan, WorkoutPlanStatus } from '../model/workout-plan.entity';
 import { RequestTimeoutException, NotFoundException } from '@nestjs/common';
 import * as SYS_MSG from '@/shared/system-message';
 
-jest.mock('@/shared/services/model-action.service', () => {
+jest.mock('@/shared/services/model-action.service.ts', () => {
   return {
     ModelAction: jest.fn().mockImplementation(() => ({
       create: jest.fn(),
@@ -20,6 +20,14 @@ jest.mock('@/shared/services/model-action.service', () => {
     })),
   };
 });
+
+const mockWorkoutExerciseService = {
+  addWorkoutExercises: jest.fn(),
+};
+
+const mockCommentsService = {
+  addComment: jest.fn(),
+};
 
 import { ModelAction } from '@/shared/services/model-action.service';
 
@@ -33,8 +41,14 @@ describe('WorkoutPlanService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WorkoutPlanService,
-        WorkoutExercisesService,
-        CommentsService,
+        {
+          provide: WorkoutExercisesService,
+          useValue: mockWorkoutExerciseService,
+        },
+        {
+          provide: CommentsService,
+          useValue: mockCommentsService,
+        },
         {
           provide: getRepositoryToken(WorkoutPlan),
           useClass: Repository,
@@ -73,7 +87,7 @@ describe('WorkoutPlanService', () => {
     });
 
     it('should throw RequestTimeoutException on error', async () => {
-      modelAction.create.mockRejectedValue(new Error('fail'));
+      modelAction.create.mockRejectedValue(new RequestTimeoutException());
       await expect(
         service.createWorkout({ title: 'Plan', exercises: [], userId: '1' }),
       ).rejects.toBeInstanceOf(RequestTimeoutException);
@@ -98,14 +112,15 @@ describe('WorkoutPlanService', () => {
     });
 
     it('should throw NotFoundException if workout not found', async () => {
-      modelAction.findOne.mockResolvedValue(null as unknown as WorkoutPlan);
+      modelAction.findOne.mockResolvedValue(null);
+
       await expect(
         service.updateWorkout('x', '1', 'u1'),
       ).rejects.toBeInstanceOf(NotFoundException);
     });
 
     it('should throw RequestTimeoutException on error', async () => {
-      modelAction.findOne.mockRejectedValue(new Error('fail'));
+      modelAction.findOne.mockRejectedValue(new RequestTimeoutException());
       await expect(
         service.updateWorkout('x', '1', 'u1'),
       ).rejects.toBeInstanceOf(RequestTimeoutException);
@@ -123,14 +138,15 @@ describe('WorkoutPlanService', () => {
     });
 
     it('should throw NotFoundException if workout not found', async () => {
-      modelAction.findOne.mockResolvedValue(null as unknown as WorkoutPlan);
+      modelAction.findOne.mockResolvedValue(null);
+
       await expect(service.deleteWorkout('1')).rejects.toBeInstanceOf(
         NotFoundException,
       );
     });
 
     it('should throw RequestTimeoutException on error', async () => {
-      modelAction.findOne.mockRejectedValue(new Error('fail'));
+      modelAction.findOne.mockRejectedValue(new RequestTimeoutException());
       await expect(service.deleteWorkout('1')).rejects.toBeInstanceOf(
         RequestTimeoutException,
       );
@@ -148,7 +164,7 @@ describe('WorkoutPlanService', () => {
     });
 
     it('should throw RequestTimeoutException on error', async () => {
-      modelAction.update.mockRejectedValue(new Error('fail'));
+      modelAction.update.mockRejectedValue(new RequestTimeoutException());
       await expect(
         service.scheduleWorkoutout('1', new Date()),
       ).rejects.toBeInstanceOf(RequestTimeoutException);
@@ -178,7 +194,7 @@ describe('WorkoutPlanService', () => {
     });
 
     it('should throw RequestTimeoutException on error', async () => {
-      modelAction.findAll.mockRejectedValue(new Error('fail'));
+      modelAction.findAll.mockRejectedValue(new RequestTimeoutException());
       await expect(
         service.getWorkouts(WorkoutPlanStatus.PENDING),
       ).rejects.toBeInstanceOf(RequestTimeoutException);
@@ -206,7 +222,7 @@ describe('WorkoutPlanService', () => {
     });
 
     it('should throw RequestTimeoutException on error', async () => {
-      modelAction.findAll.mockRejectedValue(new Error('fail'));
+      modelAction.findAll.mockRejectedValue(new RequestTimeoutException());
       await expect(service.generateWorkoutReport('u1')).rejects.toBeInstanceOf(
         RequestTimeoutException,
       );

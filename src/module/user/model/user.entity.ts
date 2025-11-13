@@ -1,6 +1,6 @@
 import { Comment } from '@/module/comments/model/comment.entity';
 import { WorkoutPlan } from '@/module/workout-plan/model/workout-plan.entity';
-import { BaseModel } from 'src/shared/base-model';
+import { BaseModel } from '@/shared/base-model';
 import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity('users')

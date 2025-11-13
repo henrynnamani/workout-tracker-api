@@ -39,7 +39,7 @@ export class ModelAction<T extends ObjectLiteral> {
     });
   }
 
-  async findOne(id: string): Promise<T> {
+  async findOne(id: string): Promise<T | null> {
     const entity = await this.repository.findOne({ where: { id } as any });
 
     if (!entity) throw new NotFoundException(SYS_MSG.ENTITY_NOT_FOUND);

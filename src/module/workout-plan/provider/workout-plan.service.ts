@@ -51,13 +51,13 @@ export class WorkoutPlanService {
   }
 
   async updateWorkout(content: string, id: string, userId: string) {
+    const workoutPlan = await this.modelAction.findOne(id);
+
+    if (workoutPlan == null) {
+      throw new NotFoundException(SYS_MSG.WORKOUT_NOT_FOUND);
+    }
+
     try {
-      const workoutPlan = await this.modelAction.findOne(id);
-
-      if (!workoutPlan) {
-        throw new NotFoundException(SYS_MSG.WORKOUT_NOT_FOUND);
-      }
-
       const comment = await this.commentsService.addComment({
         content,
         userId,
@@ -78,13 +78,13 @@ export class WorkoutPlanService {
   }
 
   async deleteWorkout(id: string) {
+    const workoutPlan = await this.modelAction.findOne(id);
+
+    if (workoutPlan == null) {
+      throw new NotFoundException(SYS_MSG.WORKOUT_NOT_FOUND);
+    }
+
     try {
-      const workoutPlan = await this.modelAction.findOne(id);
-
-      if (!workoutPlan) {
-        throw new NotFoundException(SYS_MSG.WORKOUT_NOT_FOUND);
-      }
-
       await this.modelAction.remove(id);
 
       return {
